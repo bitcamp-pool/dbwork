@@ -1,16 +1,16 @@
 
---[system °èÁ¤¿¡¼­ È®ÀÎ : °èÁ¤µé È®ÀÎ]
+--[system ê³„ì •ì—ì„œ í™•ì¸ : ê³„ì •ë“¤ í™•ì¸]
 --SQL> select username, account_status from dba_users;
 
---[hr °èÁ¤ÀÇ lock ÇØÁ¦]
+--[hr ê³„ì •ì˜ lock í•´ì œ]
 --SQL> alter user hr account unlock;
---È®ÀÎ
+--í™•ì¸
 --SQL> select username, account_status from dba_users;
 
---[hr °èÁ¤ÀÇ ºñ¹ø º¯°æ(a1234)]
+--[hr ê³„ì •ì˜ ë¹„ë²ˆ ë³€ê²½(a1234)]
 --SQL> alter user hr identified by a1234;
 
---[system °èÁ¤¿¡¼­ ´Ù¸¥ °èÁ¤À¸·Î ÀÌµ¿ÇÒ¶§]
+--[system ê³„ì •ì—ì„œ ë‹¤ë¥¸ ê³„ì •ìœ¼ë¡œ ì´ë™í• ë•Œ]
 --SQL> show user
 --USER is "SYSTEM"
 --SQL> conn hr/a1234
@@ -24,47 +24,47 @@
 --DDL(CREATE, DROP, ALTER)
 --DML(INSERT, DELETE, UPDATE, SELECT)
 --DCL
---TABLE(ÄÃ·³°ú ·¹ÄÚµå·Î ±¸¼º)
+--TABLE(ì»¬ëŸ¼ê³¼ ë ˆì½”ë“œë¡œ êµ¬ì„±)
 
---emp ÀüÃ¼ µ¥ÀÌÅÍ È®ÀÎ
+--emp ì „ì²´ ë°ì´í„° í™•ì¸
 select * from employees; --ctrl+enter
 
---first_name°ú last_name¸¸ Á¶È¸
+--first_nameê³¼ last_nameë§Œ ì¡°íšŒ
 SELECT first_name, last_name
 FROM employees;
     
---empÀÇ Å×ÀÌºí ±¸Á¶ È®ÀÎ
+--empì˜ í…Œì´ë¸” êµ¬ì¡° í™•ì¸
 Desc Employees;
 
---Á÷¾÷ Á¾·ùº°·Î ÇÑ¹ø¾¿¸¸ Ãâ·Â(Áßº¹ Á¦°Å)
+--ì§ì—… ì¢…ë¥˜ë³„ë¡œ í•œë²ˆì”©ë§Œ ì¶œë ¥(ì¤‘ë³µ ì œê±°)
 select DISTINCT job_id from employees;
 
---ÀÌ¸§À» ºÙ¿©¼­ Ãâ·ÂÇÏ°í Á¦¸ñÀ» 'ÀÌ¸§'À¸·Î Ãâ·Â
-SELECT first_name||' '||last_name as "ÀÌ¸§" from employees;
-SELECT first_name||' '||last_name "ÀÌ¸§" from employees; --"   " : °ø¹é°¡´É
-SELECT first_name||' '||last_name ÀÌ¸§ from employees;   --ÀÌ ¸§ : °ø¹éºÒ°¡
+--ì´ë¦„ì„ ë¶™ì—¬ì„œ ì¶œë ¥í•˜ê³  ì œëª©ì„ 'ì´ë¦„'ìœ¼ë¡œ ì¶œë ¥
+SELECT first_name||' '||last_name as "ì´ë¦„" from employees;
+SELECT first_name||' '||last_name "ì´ë¦„" from employees; --"   " : ê³µë°±ê°€ëŠ¥
+SELECT first_name||' '||last_name ì´ë¦„ from employees;   --ì´ ë¦„ : ê³µë°±ë¶ˆê°€
 
---Á¶°ÇÀ¸·Î °Ë»öÇÒ °æ¿ì¿¡ whereÀı »ç¿ë
+--ì¡°ê±´ìœ¼ë¡œ ê²€ìƒ‰í•  ê²½ìš°ì— whereì ˆ ì‚¬ìš©
 select first_name, job_id 
 from employees
 where first_name = 'Steven';
 
---A·Î ½ÃÀÛÇÏ´Â »ç¶÷ °Ë»öÇÒ ¶§ like »ç¿ë
+--Aë¡œ ì‹œì‘í•˜ëŠ” ì‚¬ëŒ ê²€ìƒ‰í•  ë•Œ like ì‚¬ìš©
 select first_name, job_id 
 from employees
 where first_name like 'A%';
 
---AÀÌ°Å³ª S·Î ½ÃÀÛÇÏ´Â »ç¶÷ °Ë»ö or ¿¬»êÀÚ »ç¿ë
+--Aì´ê±°ë‚˜ Së¡œ ì‹œì‘í•˜ëŠ” ì‚¬ëŒ ê²€ìƒ‰ or ì—°ì‚°ì ì‚¬ìš©
 select first_name, job_id 
 from employees
 where first_name like 'A%' or first_name like 'S%';
 
---a³ª s¸¦ Æ÷ÇÔÇÏ°í ÀÖ´Â »ç¶÷
+--aë‚˜ së¥¼ í¬í•¨í•˜ê³  ìˆëŠ” ì‚¬ëŒ
 select first_name, job_id 
 from employees
 where first_name like '%a%' or first_name like '%s%';
 
---´ë¼Ò¹®ÀÚ »ó°ü¾øÀÌ a³ª s¸¦ Æ÷ÇÔÇÏ°í ÀÖ´Â »ç¶÷(´ë¼Ò¹®ÀÚ º¯È¯ ÇÔ¼ö »ç¿ë)
+--ëŒ€ì†Œë¬¸ì ìƒê´€ì—†ì´ aë‚˜ së¥¼ í¬í•¨í•˜ê³  ìˆëŠ” ì‚¬ëŒ(ëŒ€ì†Œë¬¸ì ë³€í™˜ í•¨ìˆ˜ ì‚¬ìš©)
 select first_name, job_id 
 from employees
 where lower(first_name) like '%a%' or lower(first_name) like '%s%';
@@ -73,34 +73,34 @@ select first_name, job_id
 from employees
 where upper(first_name) like '%A%' or upper(first_name) like '%S%';
 
---lower, upper È®ÀÎ
-select  first_name ¿øÀÌ¸§, 
-        upper(first_name) ´ë¹®ÀÚ, 
-        lower(first_name) ¼Ò¹®ÀÚ
+--lower, upper í™•ì¸
+select  first_name ì›ì´ë¦„, 
+        upper(first_name) ëŒ€ë¬¸ì, 
+        lower(first_name) ì†Œë¬¸ì
 from employees;
 
--- [¿¬»êÀÚÀÇ È°¿ë]
+-- [ì—°ì‚°ìì˜ í™œìš©]
 
---first_name ÀÌ a·Î ³¡³ª´Â »ç¶÷
+--first_name ì´ aë¡œ ëë‚˜ëŠ” ì‚¬ëŒ
 select first_name
 from employees
 where lower(first_name) like '%a';
 
---first_name¿¡¼­ µÎ¹øÂ° ±ÛÀÚ°¡ aÀÎ »ç¶÷
+--first_nameì—ì„œ ë‘ë²ˆì§¸ ê¸€ìê°€ aì¸ ì‚¬ëŒ
 select first_name
 from employees
 where first_name like '_a%'; 
---¼¼¹øÂ° ±ÛÀÚ°¡ aÀÎ »ç¶÷
+--ì„¸ë²ˆì§¸ ê¸€ìê°€ aì¸ ì‚¬ëŒ
 select first_name
 from employees
 where first_name like '__a%'; 
 
---¿¬ºÀ(salary)ÀÌ 5,000 ÀÌ»óÀÎ °æ¿ì¸¸ Ãâ·Â
+--ì—°ë´‰(salary)ì´ 5,000 ì´ìƒì¸ ê²½ìš°ë§Œ ì¶œë ¥
 select first_name, salary
 from employees
 where salary >= 5000;
 
---¿¬ºÀ 5,000 ~ 8,000 ÀÎ °æ¿ì Ãâ·Â
+--ì—°ë´‰ 5,000 ~ 8,000 ì¸ ê²½ìš° ì¶œë ¥
 select first_name, salary
 from employees
 where salary >= 5000 and salary <= 8000;
@@ -109,16 +109,16 @@ select first_name, salary
 from employees
 where salary BETWEEN 5000 and 8000;
 
---¿¬ºÀÀÌ 3,000¹Ì¸¸ ÀÌ°Å³ª 10,000 ÀÌ»óÀÎ °æ¿ì¸¸ Ãâ·Â
+--ì—°ë´‰ì´ 3,000ë¯¸ë§Œ ì´ê±°ë‚˜ 10,000 ì´ìƒì¸ ê²½ìš°ë§Œ ì¶œë ¥
 select first_name, salary
 from employees
-where salary <= 3000 or salary >= 10000; --3000Ãâ·Â
+where salary <= 3000 or salary >= 10000; --3000ì¶œë ¥
 
 select first_name, salary
 from employees
-where salary NOT BETWEEN 3000 and 10000; --3000Ãâ·ÂX
+where salary NOT BETWEEN 3000 and 10000; --3000ì¶œë ¥X
 
---manager_id°¡ 100, 103, 120ÀÎ °æ¿ì Ãâ·Â
+--manager_idê°€ 100, 103, 120ì¸ ê²½ìš° ì¶œë ¥
 select first_name, manager_id
 from employees
 where manager_id = 100 or manager_id = 103 or manager_id = 120;
@@ -127,35 +127,35 @@ select first_name, manager_id
 from employees
 where manager_id IN (100, 103, 120);
 
---first_name, salary, commission_pct Ãâ·Â
+--first_name, salary, commission_pct ì¶œë ¥
 select first_name, salary, commission_pct
-from employees; --commission_pct: null °ªÀÌ Á¸Àç
+from employees; --commission_pct: null ê°’ì´ ì¡´ì¬
 
 select first_name, salary, commission_pct
 from employees
-where commission_pct IS NULL;  --commission_pct = 'null' (X) ¹®ÀÚ¿­ÀÌ ¾Æ´Ï´Ù!
+where commission_pct IS NULL;  --commission_pct = 'null' (X) ë¬¸ìì—´ì´ ì•„ë‹ˆë‹¤!
 
 select first_name, salary, commission_pct
 from employees
 where commission_pct IS NOT NULL;  
 
---salary ¿Í commÀ» ´õÇÒ °æ¿ì : commÀÌ null ÀÌ¸é °á°úµµ null
+--salary ì™€ commì„ ë”í•  ê²½ìš° : commì´ null ì´ë©´ ê²°ê³¼ë„ null
 select salary + commission_pct from employees;
 
---NVL(ÄÃ·³¸í, °ª): null ÀÏ °æ¿ì °ª ÁöÁ¤(mysql¿¡¼­´Â if null
-select  salary ¿¬ºÀ, 
-        NVL(commission_pct, 0) Ä¿¹Ì¼Ç, 
-        salary + NVL(commission_pct, 0) ÃÑ¿¬ºÀ
+--NVL(ì»¬ëŸ¼ëª…, ê°’): null ì¼ ê²½ìš° ê°’ ì§€ì •(mysqlì—ì„œëŠ” if null
+select  salary ì—°ë´‰, 
+        NVL(commission_pct, 0) ì»¤ë¯¸ì…˜, 
+        salary + NVL(commission_pct, 0) ì´ì—°ë´‰
 from employees;
 
---commÀÌ ³ÎÀÌ ¾Æ´Ñ »ç¶÷ Áß salary°¡ 5000 ÀÌ»óÀÎ »ç¶÷ÀÇ first_name°ú salary, comm ¸¸ Ãâ·Â
+--commì´ ë„ì´ ì•„ë‹Œ ì‚¬ëŒ ì¤‘ salaryê°€ 5000 ì´ìƒì¸ ì‚¬ëŒì˜ first_nameê³¼ salary, comm ë§Œ ì¶œë ¥
 select  first_name,
         salary,
         commission_pct
 from employees
 where commission_pct is NOT NULL and salary >= 5000;
 
---Á÷¾÷(job_id)ÀÌ it_prog ÀÌ°Å³ª pu_man ÀÎ »ç¶÷À» Á¶È¸(first_name, job_id)
+--ì§ì—…(job_id)ì´ it_prog ì´ê±°ë‚˜ pu_man ì¸ ì‚¬ëŒì„ ì¡°íšŒ(first_name, job_id)
 select first_name, job_id
 from employees
 where job_id = 'IT_PROG' or job_id = 'PU_MAN';
