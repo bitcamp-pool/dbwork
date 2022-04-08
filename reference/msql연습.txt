@@ -1,0 +1,350 @@
+** cmd 창에서 mysql 버전 확인
+   MYSQL -V
+
+** cmd 창에서 mysql 연결
+  mysql -u root -p
+  password 란이 나오면 1111 치고 엔터
+
+** 현재 mysql 상태 확인(한글및 여러가지 확인)
+  status;
+
+** database 확인하기
+   show databases;
+
+** database 변경
+   use 데이타베이스명;
+
+** 테이블 생성 : 테이블명 : person
+   이름 문자열 (20자리)
+   나이 정수타입
+   폰번호  문자열(20자리)
+
+  create table person (name varchar(20), age int, phone varchar(20));
+
+** 테이블이 생성되었는지 확인
+  show tables;
+
+** 테이블의 구조 확인
+  desc 테이블명;
+
+** 테이블에 데이타 추가
+   insert into 테이블명 (필드명 리스트) values (값들);
+   단, 전체 필드에 차례대로 넣을 경우에는 필드명 리스트는 생략가능하다
+
+  예)  insert into person values ('lee',20,'010-222-3333');
+	insert into person (name,age,phone) values ('lee',20,'010-222-3333');   
+
+
+** 테이블에 있는 전체 데이타 확인하기
+  select 필드명 from 테이블명  (단,전체 필드를 볼경우는 * 써도됨)
+  select * from person;
+  select name,age from person;
+  select * from student limit 0,2;  (0번(첫데이타) 부터 2개만 데이타 출력하기)
+
+  1. name 이 송혜교인 사람 찾기
+     select * from person where name='송혜교';
+  2. name 이 송헤교인 사람중 나이가 30세 이상인 사람
+    select * from person where name='송혜교' and age>=30;
+  3. 김씨성을 가진 모든 사람
+     select * from person where name like '김%';
+  4. 김씨성과 이씨성을 가진 사람 모두 출력
+    select * from person where name like '김%' or name like '이%';
+  5.  폰번호가 010 이 아닌사람 출력
+    select * from person where not phone like '010%';
+  6. 이름의 오름차순으로 출력(또는 내림차순으로)
+     select * from person order by name asc (내림차순은 desc)
+  7. 김씨성을 가진 사람을 찾아 나이의 내림차순으로 출력
+    select * from person where name like '김%' order by age desc;
+  8. 이름에 '민' 을포함하고 있는 모든 데이타 출력
+    select * from person where name like '%민%';
+
+** 수정
+  1. 이름이 송혜교인 사람을 찾아 나이를 19세로 수정
+     update person set age=19 where name='송혜교';
+  2. 이승기의 나이와 폰번호 수정
+     update person set age=27,phone='010-234-5678' where name='이승기';
+  3. 김씨성을 가진사람의 주소를 모두 성동구로 수정
+     update person set addr='성동구' where name like '김%';
+  4. 이씨성을 가진사람의 주소를 모두 영등포구로 수정
+     update person set addr='영등포구' where name like '이%';
+
+** 삭제
+   delete from 테이블명 where 조건;
+   
+   1. 이름이 송혜교인 사람 삭제
+	delete from person where name='송혜교';
+
+   2. 김씨성을 가진 사람중 나이가 30세 이상인 사람들 모두 삭제
+       delete from person where name like '김%' and age>=30;
+
+   3. 나이가 10세 미만이거나 50세 이상인 사람 모두 삭제
+      delete from person where age<10 or age>=50;
+
+   4. 폰번호가 011 인사람 모두 삭제
+	delete from person where phone like '011%';
+   5. 폰번호가 널값인 데이타 모두 삭제
+        delete from person where phone is null;
+
+  
+** 필드 추가 -추가시 초기값 지정
+    alter table person add column addr varchar(30) default '강남구' ;
+    alter table person add column age int;
+    확인
+    select * from person;
+** 필드 타입 수정
+   alter table person modify name varchar(30);  //20에서 30으로 수정함
+   확인
+   desc person;
+** 필드 삭제
+   alter table person drop age;
+   확인
+   desc person;
+
+** 데이타 복원
+  mysql 은 기본이 자동커밋이다
+  그래서 commit 을 일단 해제
+ 1. set autocommit=0;  //한번 해주면 다시 안해도 된다
+  
+  이름이 이경실인 사람 삭제
+  delete from person where name='이경실';
+  삭제된거 확인ㅋ
+  select * from person
+  복원
+  rollback;
+  복원된거 확인
+  select * from person
+
+  다시 이경실 삭제
+  delete from person where name='이경실';
+
+  삭제확정
+  commit;
+
+  복원
+  rollback;
+
+ 복원되었는지 확인
+  select * from person  //당연히 복원 안된다
+
+** 테이블 완전 삭제
+   drop table 테이블명;
+   확인
+   show tables;
+
+========= 두번째 테이블로 연습하기 =================
+자동증가되는 시퀀스 추가하는 테이블 생성하기
+테이블 구조
+------------------------
+num int 시퀀스(자동증가)
+name 문자형  널값허용안함
+hp 문자형
+buseo 문자형
+ipsaday 날짜형
+-------------------------
+
+create table employee (num int primary key auto_increment,name varchar(20) not null,
+     hp varchar(20),buseo varchar(20),ipsaday date);
+
+** 나이 컬럼 추가
+     alter table employee add column age int;
+** 모두 일단 25살로 맞춰놓기
+     update employee set age=25;
+
+** 데이타 추가하기
+ insert into employee(name,hp,buseo,ipsaday) values ('이승기','010-111-2222','영업부',now());
+
+
+** 자주 사용하는 함수
+count : 갯수
+
+1. 총 데이타 갯수
+   select count(*) from employee;
+
+2. 부서별 인원수
+   select buseo,count(buseo) from employee group by buseo;  
+
+
+sum : 합계, avg : 평균
+
+1. 나이의 총 합계
+  select sum(age),avg(age) from employee;
+2. 부서별 나이의 합계와 평균
+  select buseo,sum(age),avg(age) from employee group by buseo; 
+
+round(값,솟숫점이하자릿수) :반올림
+
+** 나이를 소숫점 이하 한자리로 평균을 구함
+  select sum(age),round(avg(age),1) from employee;
+ select buseo,sum(age),round(avg(age),1) from employee group by buseo;
+
+max :최대값, min : 최소값
+ 
+1. 부서별 최고 연장자와 연소자 출력
+  select buseo,max(age),min(age) from employee group by buseo;   
+
+** 제목을 별도로 출력하고 싶을때...
+select buseo as'부서' ,max(age) as '연장자',min(age) as '연소자' from employee group by buseo;
+
+** 부서에 널값이 있을경우 특정문자열로 변환해서 출력할 경우
+select name,ifnull(buseo,'^^') from employee
+ =>ifnull 은 오라클의 NVL 과 같음
+
+** 날자에서 년도와 월만 분리해서 출력
+select name as '이름', year(ipsaday) as '입사년도', month(ipsaday) as '입사월' from employee;
+
+** 위와 같으나 null 값은 모두 '낙하산' 으로 출력할것
+select name as '이름', ifnull(year(ipsaday),'낙하산') as '입사년도', ifnull(month(ipsaday),'낙하산') as '입사월' from employee;
+
+** 1번 인덱스부터 3번 인덱스까지만 출력-페이징처리할때 많이 사용
+select * from employee limit 1,3;
+--------------------------------------------
+mysql 의 함수들
+
+- 현재 일자 구하기 (시간은 오전 12:00:00로 표기됨)
+
+CURDATE()
+
+- 현재 시간 구하기
+
+NOW()
+
+- 현재일자를 YYYYMMDD로 구하기 (대소문자 주의)
+
+
+DATE_FORMAT(CURDATE(), '%Y%m%d')
+
+
+- Oracle의 NVL 과 같은 함수
+
+IFNULL
+
+
+MySQL 내장 함수 정리
+
+
+1숫자 관련 함수 
+
+- ABS(숫자) - 절대값 출력
+
+- CEILING(숫자) - 값보다 큰 정수 중 가장 작은 수
+
+- FLOOR(숫자) - 값보다 작은 정수 중 가장 큰 수[실수를 무조건 버림(음수일 경우는 제외)]
+
+- ROUND(숫자,자릿수) - 숫자를 소수점 이하 자릿수에서 반올림.(자릿수는 양수,0,음수를 갖을 수 있다.) 
+
+- TRUNCATE(숫자,자릿수) - 숫자를 소수점 이하 자릿수에서 버림
+
+- POW(X,Y) or POWER(X,Y) - X의 Y승 
+
+- MOD (분자, 분모) - 분자를 분모로 나눈 나머지를 구한다.(연산자 %와 같음) 
+
+- GREATEST(숫자1,숫자2,숫자3...) - 주어진 수 중 제일 큰 수 리턴
+
+- LEAST(숫자1,숫자2,숫자3...) - 주어진 수 중 제일 작은 수 리턴
+
+- INTERVAL(a,b,c,d.....) - a(숫자)의 위치 반환 
+
+
+2문자 관련 함수 
+
+- ASCII(문자) - 문자의 아스키 코드값 리턴
+
+- CONCAT('문자열1','문자열2','문자열3'...) - 문자열들을 이어준다
+
+- INSERT('문자열','시작위치','길이','새로운문자열') - 문자열의 시작위치부터 길이만큼 새로운 문자열로 대치 
+
+- REPLACE('문자열','기존문자열','바뀔문자열') - 문자열 중 기존문자열을 바뀔 문자열로 바꾼다
+
+- INSTR('문자열','찾는문자열') - 문자열 중 찾는 문자열의 위치값을 출력 
+
+- LEFT('문자열',개수) - 문자열 중 왼쪽에서 개수만큼을 추출.
+
+- RIGHT('문자열',개수) - 문자열 중 오른쪽에서 개수만큼을 추출
+
+- MID('문자열',시작위치,개수) - 문자열 중 시작위치부터 개수만큼 출력 
+
+- SUBSTRING('문자열',시작위치,개수) - 문자열 중 시작위치부터 개수만큼 출력 
+
+- LTRIM('문자열') - 문자열 중 왼쪽의 공백을 없앤다
+
+- RTRIM('문자열') - 문자열 중 오른쪽의 공백을 없앤다
+
+- TRIM('문자열') - 양쪽 모두의 공백을 없앤다
+
+- LCASE('문자열') or LOWER('문자열') - 소문자로 바꾼다
+
+- UCASE('문자열') or UPPER('문자열') - 대문자로 바꾼다
+
+- REVERSE('문자열') - 문자열을 반대로 나열한다
+
+
+3논리 관련 함수 
+
+- IF(논리식,참일 때 값,거짓일 때 값) - 논리식이 참이면 참일 때 값을 출력하고 논리식이 거짓이면 거짓일 때 출력한다
+
+- IFNULL(값1,값2) - 값1이 NULL 이면 값2로 대치하고 그렇지 않으면 값1을 출력 
+
+
+4집계 함수 
+
+- COUNT(필드명) - NULL 값이 아닌 레코드 수를 구한다
+
+- SUM(필드명) - 필드명의 합계를 구한다
+
+- AVG(필드명) - 각각의 그룹 안에서 필드명의 평균값을 구한다
+
+- MAX(필드명) - 최대값을 구한다
+
+- MIN(필드명) - 최소값을 구한다
+
+
+
+
+5날짜 관련 함수 
+
+- NOW() or SYSDATE() or CURRENT_TIMESTAMP() - 현재 날짜와 시간 출력 
+
+- CURDATE() or CURRENT_DATE() -현재 날짜 출력 
+
+- CURTIME() or CURRENT_TIME() -현재 시간 출력 
+
+- DATE_ADD(날짜,INTERVAL 기준값) -날짜에서 기준값 만큼 더한다
+
+- DATE_SUB(날짜,INTERVAL 기준값) -날짜에서 기준값 만큼 뺸다
+
+- YEAR(날짜) -날짜의 연도 출력
+
+- MONTH(날짜) -날짜의 월 출력
+
+- MONTHNAME(날짜) -날짜의 월을 영어로 출력
+
+- DAYNAME(날짜) -날짜의 요일일 영어로 출력
+
+- DAYOFMONTH(날짜) -날짜의 월별 일자 출력
+
+- DAYOFWEEK(날짜) -날짜의 주별 일자 출력(월요일(0),화요일(1)...일요일(6)) 
+
+- WEEKDAY(날짜) -날짜의 주별 일자 출력(월요일(0),화요일(1)...일요일(6)) 
+
+- DAYOFYEAR(날짜) -일년을 기준으로 한 날짜까지의 날 수
+
+- WEEK(날짜) -일년 중 몇 번쨰 주
+
+- FROM_DAYS(날 수) --00년 00월 00일부터 날 수 만큼 경과한 날의 날짜 출력
+
+- TO_DAYS(날짜) --00 년 00 월 00일 부터 날짜까지의 일자 수 출력
+
+- DATE_FORMAT(날짜,'형식') : 날짜를 형식에 맞게 출력
+
+** 문자형을 날짜타입으로 변환해서 db 에 넣으려면
+
+insert into person (name,phone,email,birthday) values
+ ('송혜교','010-222-3333','song@nate.com',
+str_to_date('20110511','%Y%m%d'));
+
+
+
+
+
+
+
