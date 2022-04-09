@@ -1,6 +1,13 @@
+--[CMD]
+--sqlplus
+--sys as sysdba
+--sqlplus sys/password@localhost/xepdb1 as sysdba
+
 
 --[system 계정에서 확인 : 계정들 확인]
+--SQL> select username from all_users;
 --SQL> select username, account_status from dba_users;
+
 
 --[hr 계정의 lock 해제]
 --SQL> alter user hr account unlock;
