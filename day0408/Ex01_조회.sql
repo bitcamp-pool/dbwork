@@ -1,33 +1,59 @@
---[CMD]
---sqlplus
---sys as sysdba
+--[CMD DB 접속]
+--sqlplus sys as sysdba
 --sqlplus sys/password@localhost/xepdb1 as sysdba
 
+--12c 이상버전(CDB/PDB)
+--같은 공유기로 원격접속을 위한 설정(저장 프로시저 실행)
+        EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
 
 --[system 계정에서 확인 : 계정들 확인]
---SQL> select username from all_users;
---SQL> select username, account_status from dba_users;
-
-
---[hr 계정의 lock 해제]
---SQL> alter user hr account unlock;
---확인
---SQL> select username, account_status from dba_users;
+--기본적으로 관리자 계정(Admin Accounts : SYS, SYSTEM)과 샘플 데이터베이스를 사용할 수 있는
+--일반사용자 계정(Default Sample Schema User Accounts:BI,HR,PM,SH)정보가 설치 시 생성되어있다.
+--SQL>  
+        select * from all_users;           --모든 계정에 대한 정보 확인
+        select * from dba_user;               
+        select username from all_users;    --모든 계정에 대한 이름 확인
+        select username from dba_user;    
+--SQL> 
+        select username, account_status from dba_users; --계정상태확인
+        
+--[HR 계정의 lock 해제]
+--SQL> 
+        alter user hr account unlock;
+        select username, account_status from dba_users;
 
 --[hr 계정의 비번 변경(a1234)]
---SQL> alter user hr identified by a1234;
+--SQL> 
+        alter user hr identified by a1234;
 
 --[system 계정에서 다른 계정으로 이동할때]
---SQL> show user
---USER is "SYSTEM"
---SQL> conn hr/a1234
---Connected.
---SQL> show user
---USER is "HR"
---SQL> select * from tab;
---conn system/manager
+--SQL> 
+        show user;
+        --USER is "SYSTEM"
+--SQL> 
+        conn hr/a1234
+        --Connected.
+--SQL> 
+        show user
+        --USER is "HR"
+--SQL> 
+        select * from tab;
+        conn system/manager;
+        
+--[사용자 계정 생성]
+--12c 이상 버전부턴 C##으로 계정이름을 지정하도록 바뀌었다. 
+--아래 명령어를 입력하고 계정 생성을 해야 한다.
+--SQL>
+        alter session set "_ORACLE_SCRIPT" = true;
+        
+        CREATE USER 계정명  IDENTIFIED BY  비밀번호;
+        ALTER USER "유저ID" IDENTIFIED BY "비밀번호";
+        
 
 ----------------------------------------------------------------------------
+--[SQL Developer에서 접속 설정 세팅하기]
+--sys 계정, hr 계정
+
 --DDL(CREATE, DROP, ALTER)
 --DML(INSERT, DELETE, UPDATE, SELECT)
 --DCL
