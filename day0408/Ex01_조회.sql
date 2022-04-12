@@ -6,7 +6,7 @@
 --같은 공유기로 원격접속을 위한 설정(저장 프로시저 실행)
         EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
 
---[system 계정에서 확인 : 계정들 확인]
+--[system(manager) 계정에서 확인 : 계정들 확인]
 --기본적으로 관리자 계정(Admin Accounts : SYS, SYSTEM)과 샘플 데이터베이스를 사용할 수 있는
 --일반사용자 계정(Default Sample Schema User Accounts:BI,HR,PM,SH)정보가 설치 시 생성되어있다.
 --SQL>  
