@@ -1,0 +1,195 @@
+1. 테이블과 시퀀스를 생성하시오
+
+   테이블명 : sawoninfo
+
+      번호  num   숫자 기본키지정  pk_sawon_num
+      사원명 sawon_name  문자(20)
+      성별  gender   문자(10)  남자,여자만 입력, ck_sawon_grnder
+      부서  buseo    문자(10)  홍보부,교육부,인사부만 입력 ck_sawon_buseo
+      ipsaday  날짜형
+
+   시퀀스명 : sawon_seq1
+       시작값: 1 , 증가값 : 1 , 캐시값 :0 ,  나머지는 모두 생략
+
+    [실습]
+    create table sawoninfo (num number(5) constraint pk_sawon_num primary key,
+     sawon_name varchar2(20),
+     gender varchar2(10) constraint ck_sawon_gender check(gender in ('남자','여자')),
+     buseo varchar2(10) constraint ck_sawon_buseo  check(buseo in ('홍보부','교육부','인사부')),
+     ipsaday date);
+
+   
+    create sequence sawon_seq1 start with 1 increment by 1 nocache;
+
+-------------------------------------------------------------------------------
+
+2. sawoninfo 에 데이타를 넣으시오(번호는 무조건 시퀀스를 이용해서 넣을것)
+   '이영자','여자','홍보부','2011-05-15'
+   '이경유','남자','교육부','2015-12-20'
+   '강호동','남자','인사부','2017-06-07'
+
+   [실습]
+   insert into sawoninfo values (sawon_seq1.nextval,'이영자','여자','홍보부','2011-05-15');
+   insert into sawoninfo values (sawon_seq1.nextval,'이경규','남자','교육부','2015-12-20');
+   insert into sawoninfo values (sawon_seq1.nextval,'겅호동','남자','인사부','2017-06-07');
+
+-------------------------------------------------------------------------------------
+3. mysawon 테이블을 생성하시오
+     num  숫자  -  sawoninfo 의 num 을 외부키로 지정  fk_mysawon_num
+     age  숫자(3)
+     address 문자(30)
+
+   [실습]
+   create table mysawon (num number(3) constraint fk_mysawon_num 
+                   references sawoninfo(num),
+             age number(3),address varchar2(30));
+
+----------------------------------------------------------------------------
+ 4. mysawon 에 sawoninfo 의 정보를 입력하시오(3명)
+    insert into mysawon values (1,34,'서울시 강남구');
+   insert into mysawon values (2,45,'부산시');
+   insert into mysawon values (3,39,'제주도');
+
+
+-------------------------------------------------------------------
+5. sawoninfo 와 myinfo 를 조인하여 데이타를 출력하시오
+
+   번호, 사원명,성별,부서,나이,주소
+
+     select s.num 번호,s.sawon_name 사원명,s.gender 성별,
+    s.buseo 부서, m.age 나이 ,m.address 주소 from sawoninfo s,mysawon m
+     where s.num=m.num;
+
+-----------------------------------------------------------------------
+6. angel 계정의 shop,client,cart 를 조인하여 데이타를 출력하시오
+   cart 의 num 이 shop 의 num 의 외부키
+   cart 의 user_id 가 client 의 user_id 의 외부키 
+
+   번호,상품명,색상,가격,이름,갯수 
+
+[실습]
+   select c.num 번호, s.sangpum 상품,
+  s.color 색상, s.price 가격,ct.name 이름, c.cnt 갯수
+   from cart c,shop s,client ct
+    where c.num=s.num and c.user_id=ct.user_id;
+
+------------------------------------------------------------
+7. 뷰 생성 (뷰는 가상테이블이다)
+  5번문제의 sql 쿼리문을 sawonview 로 생성(덮어쓰기 가능)
+  6번문제의 sql 쿼리문을 mycartview 로 생성(덮어쓰기 가능)
+
+  [실습] 1
+   create or replace view sawonview
+      as
+      select s.num 번호,s.sawon_name 사원명,s.gender 성별,
+    s.buseo 부서, m.age 나이 ,m.address 주소 from sawoninfo s,mysawon m
+     where s.num=m.num;
+
+   [실습]2
+   create or replace view mycartview
+as
+select c.num 번호, s.sangpum 상품,
+  s.color 색상, s.price 가격,ct.name 이름, c.cnt 갯수
+   from cart c,shop s,client ct
+where c.num=s.num and c.user_id=ct.user_id;
+----------------------------------------------------------------------
+8. PL-SQL 기초
+
+   sawoninfo 에서 '이영자' 의 성별과 부서를 출력하시오
+   (type 선언)
+
+    DECLARE
+    vgender sawoninfo.gender%type;
+    vbuseo sawoninfo.buseo%type;
+    vname sawoninfo.sawon_name%type:='이영자';
+begin
+    select gender,buseo 
+    into vgender,vbuseo
+    from sawoninfo
+    where sawon_name=vname;
+    DBMS_OUTPUT.PUT_LINE('이름 :'||vname);
+    DBMS_OUTPUT.PUT_LINE('성별 :'||vgender||',부서:'||vbuseo);
+end;
+
+----------------------------------------------------------------
+9. myscott 계정의 emp 에서 ename 이 'KING' 인 사람의 직업(job)
+  을 알아내어 출력하시오(rowtype 사용)
+
+  DECLARE
+    vemp myscott.emp%rowtype;
+begin
+    select * 
+    into vemp
+    from emp
+    where ename='KING';
+    DBMS_OUTPUT.PUT_LINE(vemp.ename||'님의 직업은 '||vemp.job||'입니다');
+end;
+
+
+
+
+
+   
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   
+
+   
+
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+

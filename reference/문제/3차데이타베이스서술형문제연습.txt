@@ -1,0 +1,158 @@
+오라클 고급 서술문제 연습
+
+1. 트랜잭션의 명령어 종류 3가지
+   commit, rollback, savepoint   
+
+
+2. 트랜잭션 명령어중 실제 저장되지 않은 데이타를 디비에 최종 저장하고
+   트랜잭션을 끝내는 명령어는?
+   commit
+
+3. 트랜잭션 명령어중 최종 저장되지 않은 데이타의 변경사항을 취소하고 트랜잭션을
+  종료하는 명령어는?
+   rollback
+
+4. 트랜잭션 명령어중 취소의 범위를 정하기 위해서 책갈피처럼 중간에 표식을 할때
+   사용하는 명령어는?
+	savepoint
+
+5.
+      1. INSERT 명령 실행
+      SAVEPOINT A
+      2. INSERT 명령 실행
+      SAVEPOINT B
+      3. INSERT 명령 실행
+      SAVEPOINT C
+      4. INSERT 명령 실행
+      SAVEPOINT D
+      5. INSERT 명령 실행
+
+     => 4,5번만 취소하고 싶을때 명령처리
+        rollback to savepoint c;
+    
+    => 2,3,4,5 를   취소하고 싶을때 명령처리
+     	 rollback to savepoint a;
+
+-----------------------------------------------------------
+6. 오라클 조인 아는대로 종류를 써보시오
+   equi join,non-equi join,self join, outer join
+
+7. 두테이블간 공통된 컬럼이 있어서 = 연산자에 의해 비교하는 조인은?
+   equi join
+
+8.  자기 자신의 테이블을 여러개 이용해서 검색하는 조인종류는?
+    self join
+
+9. 조인 조건에 일치하는 데이타뿐만 아니라 일치하지 않는것도 조회하기 위한 조인종류는?
+   outer join
+
+10. student 테이블에는 번호(num),이름(name),점수(score) 가 있고
+   info 테이블에는 번호(num) ,핸드폰(hp),주소(addr) 이 있다
+   그리고 info 테이블의 num 은 student 테이블의 num 을 참조하고 있다(외부키)
+
+   위와 같을경우 다음의 컬럼을 조회하려고 한다. 알맞은 sql문은
+   번호,이름,핸드폰,주소,점수 (단,번호의 오름차순)
+
+   select s.num,s.name,i.hp,i.addr,s.score from student s,info i
+      where s.num=i.num order by 1 asc;
+
+--------------------------------------------------------
+11.  apple 테이블의 컬럼들  idx,name,score
+    mango 테이블의 컬럼들  phone,addr,idx (idx 는  apple 의 idx 를 참조하는 컬럼)
+    
+    idx,name,addr,score 4개의 컬럼만 출력
+   
+    select a.idx,a.name,m.addr,a.score from apple a,mango m
+                    where a.idx=m.idx;
+
+----------------------------------------------------------------
+뷰연습
+  12  다음의 설명에 해당하는 것은? View
+
+
+    1. (   )는 하나의 가상 테이블이다
+    2. (    )는 실제 데이타가 저장되는 것은 아니지만 (   )를 통해 데이타를 관리할수 있다
+    3. (    )는 복잡한 쿼리를 통해 얻을수 있는 결과를 간단한 쿼리를 써서 구할수 있게해준다
+    4. 한개의 (   )로 여러 테이블에 대한 데이타를 검색할수 있다
+
+  13. 뷰를 생성하려고 한다
+     같은 이름의 뷰가 있을경우 에러가 나게 하려면 괄호안에 어떻게 써야 좋을까?
+     create view 
+
+     (                 ) view_name
+    as
+    select 조회 쿼리문
+  
+  14. 뷰를 생성하려고 한다
+     같은 이름의 뷰가 있을경우 수정이 되도록 하려고 한다 . 괄호안에 알맞은 명령어는?
+     create or replace view 
+
+     (                 ) view_name
+    as
+    select 조회 쿼리문
+
+  15.  select * from apple where age>=20
+       위와 같은 쿼리문이 있을경우 이 쿼리문을 myview 라는이름의 뷰로 
+       만들어두려고 한다
+       명령어를 직접 써보시오
+
+      create or replace view myview
+      as 
+      select * from apple where age>=20 
+
+  
+  16. 다음 설명에 해당하는 용어를 적어보시오
+      순차적인 숫자를 발생하고자할때 필요하며 시작값이나 증가값등을
+      지정할수 있다  (  sequence)
+ 
+       
+   17. 다음 설명에 해당하는 용어를 적어보시오
+       SQL언어에 절차적 언어요소를 추가해서 프로그래밍하는것을 무엇이라하는가?
+         ( pl/sql     )
+
+   18. 다음 설명에 해당하는 용어를 적어보시오
+	제약조간을 줄때 사용한다
+        나중에 오류 발생시 파악하기가 쉽다
+	(  constraint              )
+
+   19. 시스템 계정에서 angel 이라는 계정에 1234 라는 비번으로 
+      새로 계정을 생성하려고 한다 . 알맞은 명령은?
+      create user angel identified by 1234;
+
+   20. 위에서 생성된 계정에 기본권한롤과 뷰를 생성할수 있는 권한까지 추가하려고 한다
+        알맞은 명령문은?
+       grant connect,resource,create view to angel;
+      
+
+   21. 시퀀스를 생성하려고 한다(시퀀스명: myseq)
+       시작값은 10, 증가값은 2, 최대값은 100 ,캐시는 0
+      알맞은 sql 문은?
+   	create sequence myseq start with 10
+              increment by 2 maxvalue 100 nocache;
+
+   22. 위에서 생성한 시퀀스의 첫 숫자를 발생하여 dual 에 출력하시오
+       select myseq.nextval from dual;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

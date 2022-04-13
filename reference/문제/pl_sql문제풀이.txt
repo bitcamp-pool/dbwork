@@ -1,0 +1,78 @@
+exec addshop('블라우스','red',21000);
+
+=> shop 에 블라우스가 존재하면 블라우스를 삭제하고
+  전달받은 데이타로 추가하시오
+
+[풀이]
+  create or replace procedure addshop
+(sang shop.sangpum%type,color shop.color%type,price shop.price%type)
+is
+  vcnt number:=0;  
+begin
+   select count(*)
+   into vcnt
+   from shop
+   where sangpum=sang;
+   DBMS_OUTPUT.PUT_LINE(sang||' 상품갯수:'||vcnt||'개');
+   -- vcnt 가 0 보다 크면 해당 상품을 모두 삭제하기
+   if vcnt>0 then
+     delete from shop where sangpum=sang;
+     DBMS_OUTPUT.PUT_LINE(sql%rowcount||'개 삭제함');
+   end if;
+   --insert
+   insert into shop values (seq1.nextval,sang,color,price,sysdate);
+   DBMS_OUTPUT.PUT_LINE(sql%rowcount||'개 추가함');
+end;
+/
+--호출
+exec addshop('니트조끼','블랙',34000);
+exec addshop('블라우스','블랙',34000);
+
+---------------------------------------------------------------------
+[문제] 
+exec myshop('블라우스','노랑');
+ 블라우스 제품이 있다면 색상을 '노랑' 으로 수정하고
+ 없다면 번호,상품명,색상만 데이타를 넣어서 insert 하시오
+
+[풀이]
+create or replace procedure myshop
+(sang shop.sangpum%type,mycolor shop.color%type)
+is
+  vcnt number:=0;  
+begin
+   select count(*)
+   into vcnt
+   from shop
+   where sangpum=sang;
+   DBMS_OUTPUT.PUT_LINE(sang||' 상품갯수:'||vcnt||'개');
+   -- vcnt 가 0 보다 크면 해당 상품을 모두 삭제하기
+   if vcnt>0 then
+     update shop set color=mycolor where sangpum=sang;
+     DBMS_OUTPUT.PUT_LINE(sql%rowcount||'개 수정함');
+   else
+     insert into shop (num,sangpum,color) values (seq1.nextval,sang,mycolor);
+     DBMS_OUTPUT.PUT_LINE(sql%rowcount||'개 추가함');
+   end if;
+end;
+/
+--호출
+exec myshop('니트조끼','노랑');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

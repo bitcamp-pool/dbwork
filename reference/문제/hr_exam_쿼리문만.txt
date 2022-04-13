@@ -1,0 +1,41 @@
+
+
+
+
+[1번] employees테이블에서 first_name에 a가 두번째에 속해있는 레코드의 first_name,last_name,phone_number를 출력하시오
+SQL> 	select first_name,last_name,phone_number 
+	from employees 
+	where first_name like '_a%';
+
+[2번] employees, departments 테이블 조인 department_id, department_name, last_name, phone_number 출력(단, phone_number가 011만 출력)
+SQL> 	select e.department_id,d.department_name,e.last_name,e.phone_number 
+	from employees e, departments d 
+	where e.department_id=d.department_id and e.phone_number like '011%';
+
+[3번] employees테이블에서 평균급여보다 더 많은 급여를 받는 사람들의 인원수를 구하라 
+SQL> 	select count(*) 
+	from employees 
+	where salary >(select avg(salary) from employees);
+                                                                                      
+[4번] employees테이블에서 평균급여보다 더 많은 급여를 받는 사람들의 last_name, phone_number를 출력하는 쿼리를 작성하시오 
+SQL> 	select last_name, phone_number 
+	from employees 
+	where salary >(select avg(salary) from employees);
+
+[5번] employees테이블에서 commission_pct가 null이 아닌 레코드의 갯수를 구하여라
+SQL> 	select count(*) 
+	from employees 
+	where commission_pct is not null;
+
+[6번] employees테이블에서 department_id별로 부서명과 평균 salary 값을 구하여 출력하는 질의문을 작성하시오(단, 부서명의 오름차순으로 출력)
+SQL> 	select d.department_name, avg(e.salary) 
+	from employees e, departments d
+ 	where e.department_id = d.department_id
+ 	group by e.department_id, d.department_name
+ 	order by d.department_name asc;
+
+[7번] employees테이블에서 department_id별로 평균급여(정수)를 출력하되 부서번호의 오름차순으로 출력하라(단, 부서번호, 평균급여 출력 Alias 지정)
+SQL> 	select distinct(department_id) "부서번호", round(avg(salary)) "평균급여" 
+     	from employees 
+	group by department_id 
+	order by department_id asc;
