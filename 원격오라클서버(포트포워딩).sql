@@ -45,8 +45,73 @@
 --제어판>네트워크 및 인터넷>고급네트워크 설정>Windows 방화벽>고급설정
 -->인바운드 규칙>새규칙
 
---09. 같은 공유기로 원격접속을 위한 설정(저장 프로시저 실행)
---   EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE);
+--09. 오라클 원격접속을 위한 DB설정(저장 프로시저 실행)
+--EXEC DBMS_XDB.SETLISTENERLOCALACCESS(FALSE); 로컬접속만 허용(false)
+--sqlplus로 원격접속
+--sqlplus bitcamp/a1234@222.106.201.63:1521/xe 
 
---10. sqlplus로 원격접속
---    sqlplus bitcamp/a1234@222.106.201.63:1521/xe 
+--10. MySQL 원격접속을 위한 DB설정
+--null,  message from server: "Host '192.168.0.1' is not allowed to connect to this MySQL server"
+--원격접속을 허용해 주는 로컬 작업이 필요
+--SELECT Host,User,plugin,authentication_string FROM mysql.user;
+--SELECT Host,User,plugin,password              FROM mysql.user; 버전5.7이하
+--즉, root계정으로는 로컬에서만 접속 가능
+--모든 IP 허용(참고로 %은 모든 아이피를 포함하지만, localhost는 포함되지 않는다.)
+
+--방법
+--GRANT ALL PRIVILEGES ON *.* TO '아이디'@'%' IDENTIFIED BY '패스워드';
+--예: 111.222.XXX.XXX 허용
+--GRANT ALL PRIVILEGES ON *.* TO '아이디'@'111.222.%' IDENTIFIED BY '패스워드';
+--예: 111.222.33.44 특정 1개 허용
+--GRANT ALL PRIVILEGES ON *.* TO '아이디'@'111.222.33.44' IDENTIFIED BY '패스워드';
+
+--원래상태 복구
+--DELETE FROM mysql.user WHERE Host='%' AND User='아이디';
+--FLUSH PRIVILEGES;
+
+C:\Users\bitcamp>mysql -u root -p
+Enter password: ****
+mysql> use mysql
+Database changed
+mysql> select host, user, password from mysql.user;
++-----------+------+-------------------------------------------+
+| host      | user | password                                  |
++-----------+------+-------------------------------------------+
+| localhost | root | *A4B6157319038724E3560894F7F932C8886EBFCF |
++-----------+------+-------------------------------------------+
+-- localhost나 127.0.0.1만 등록이 되어있는 것을 확인 할 수 있는데, 외부에서 접근이 되게 하려면, 따로 등록이 필요
+
+-- 1) 특정 IP 접근 허용 설정
+-- mysql> grant all privileges on DB명.테이블명 to 'root'@'220.000.00.000' identified by 'root의 패스워드';
+
+
+-- 2) 특정 IP 대역 접근 허용 설정
+-- mysql> grant all privileges on DB명.테이블명  to 'root'@'220.000.%' identified by 'root의 패스워드';
+
+
+-- 3) 모든 IP의 접근 허용 설정
+-- mysql> grant all privileges on DB명.테이블명  to 'root'@'%' identified by 'root의 패스워드'
+
+mysql> grant all privileges on *.* to 'root'@'%' identified by '1234';
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> select host, user, password from mysql.user;
++-----------+------+-------------------------------------------+
+| host      | user | password                                  |
++-----------+------+-------------------------------------------+
+| localhost | root | *A4B6157319038724E3560894F7F932C8886EBFCF |
+| %         | root | *A4B6157319038724E3560894F7F932C8886EBFCF |
++-----------+------+-------------------------------------------+
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.03 sec)
+
+-- 4. LISTEN IP 대역 변경
+
+-- my.cnf 설정파일에서 bind-address라는 부분을 주석처리.
+-- vi /etc/my.cnf
+-- # bind-address = 127.0.0.1
+
+-- 5. mysql 재시작
+-- 주석처리가 끝났으면, mysql을 재시작.
+-- /etc/init.d/mysqld restart
